@@ -1,0 +1,105 @@
+﻿@using FNet.AdminPages.Models
+@using System
+@using System.Data
+@model F0Model
+@{
+    DataTable dt = null;
+    if (Model != null && Model.ChangeJournal.Tables.Count > 0)
+    {
+        dt = Model.ChangeJournal.Tables[0];
+    }
+}
+<style type="text/css">
+    #admin_pages_views_f0_table table.change-journal tr {
+        border-left: 1px solid black;
+    }
+
+    #admin_pages_views_f0_table table.change-journal th {
+        border-top: 1px solid black;
+        border-right: 1px solid black;
+        padding: 2px;
+    }
+
+    #admin_pages_views_f0_table table.change-journal td {
+        border-top: 1px solid black;
+        border-right: 1px solid black;
+        padding: 2px;
+    }
+
+    #admin_pages_views_f0_table tr.table-head-row {
+        font-weight: bold;
+    }
+</style>
+<div id="admin_pages_views_f0_table">
+    @if (dt != null)
+    {
+        F0Model.ItemsArray prevRow = null;
+        F0Model.ItemsArray currRow = null;
+        <table class="change-journal" style="margin: 6px;">
+            <tr class="table-head-row">
+                <th>ОК</th>
+                <th>Дата</th>
+                <th>Менеджер</th>
+                <th>Аукцион</th>
+                <th>Спецификация</th>
+                <th>Товар</th>
+                <th>Количество</th>
+            </tr>
+            @foreach (DataRow dr in dt.Rows)
+            {
+                prevRow = currRow;
+                currRow = new F0Model.ItemsArray
+                {
+                    ОК = (dr["разрешено"] == DBNull.Value) ? "False" : ((Boolean)dr["разрешено"]).ToString(),
+                    Дата = (dr["дата"] == DBNull.Value) ? "" : ((DateTime)dr["дата"]).ToString("dd.MM.yy"),
+                    Менеджер = (dr["менеджер"] == DBNull.Value) ? "" : (String)dr["менеджер"],
+                    Аукцион = (dr["аукцион"] == DBNull.Value) ? "" : (String)dr["аукцион"],
+                    Спецификация = (dr["спецификация"] == DBNull.Value) ? "" : ((Int32)dr["спецификация"]).ToString(),
+                    Товар = (dr["товар"] == DBNull.Value) ? "" : (String)dr["товар"],
+                    Количество = (dr["количество"] == DBNull.Value) ? "" : ((Decimal)dr["количество"]).ToString("n3")
+                };
+            <tr class="table-body-row">
+                @if (prevRow == null
+                    || prevRow.Дата != currRow.Дата
+                    || prevRow.Менеджер != currRow.Менеджер
+                    || prevRow.Аукцион != currRow.Аукцион
+                    || prevRow.Спецификация != currRow.Спецификация)
+                {
+                    if (currRow.ОК == "True")
+                    {
+                        <td><input type="checkbox" checked="checked" /></td>
+                    }
+                    else
+                    {
+                        <td><input type="checkbox" /></td>
+                    }
+                    <td>@currRow.Дата</td>
+                    <td>@currRow.Менеджер</td>
+                    <td>@currRow.Аукцион</td>
+                    <td>@currRow.Спецификация</td>
+                    <td>@currRow.Товар</td>
+                    <td style="text-align: right">@currRow.Количество</td>
+                }
+                else
+                {
+                    if (currRow.ОК == "True")
+                    {
+                        <td style="border-top: none;"></td>
+                    }
+                    else
+                    {
+                        <td style="border-top: none;"></td>
+                    }
+                    <td style="border-top: none;"></td>
+                    <td style="border-top: none;"></td>
+                    <td style="border-top: none;"></td>
+                    <td style="border-top: none;"></td>
+                    <td>@currRow.Товар</td>
+                    <td style="text-align: right">@currRow.Количество</td>
+                }
+            </tr>
+            }
+            <tr style="border: 1px solid black"></tr>
+        </table>
+    }
+</div>

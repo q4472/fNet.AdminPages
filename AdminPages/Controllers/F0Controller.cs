@@ -1,13 +1,17 @@
-﻿using System;
+﻿using FNet.AdminPages.Models;
+using System;
 using System.Web.Mvc;
 
-namespace FNet.Settings.Controllers
+namespace FNet.AdminPages.Controllers
 {
     public class F0Controller : Controller
     {
-        public Object Index()
+        public Object Index(Guid SessionId)
         {
-            return "q";
+            Object v = null;
+            F0Model m = new F0Model(SessionId);
+            v = PartialView("~/Views/F0/Index.cshtml", m);
+            return v;
         }
     }
 }

@@ -1,0 +1,106 @@
+﻿@model FNet.AdminPages.Models.F0Model
+<style type="text/css">
+    #admin_pages_views_f0_index {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+        #admin_pages_views_f0_index div.section-header {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            height: 20px;
+            overflow: hidden;
+            padding: 2px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12pt;
+            border-bottom: 2px solid green;
+        }
+
+        #admin_pages_views_f0_index div.section-filter {
+            position: absolute;
+            left: 0;
+            top: 26px;
+            width: 240px;
+            right: 0;
+            bottom: 0;
+            float: left;
+            overflow: auto;
+            padding: 2px;
+        }
+
+            #admin_pages_views_f0_index div.section-filter table tr {
+                height: 40px;
+            }
+
+            #admin_pages_views_f0_index div.section-filter table td {
+                padding: 2px;
+            }
+
+        #admin_pages_views_f0_index div.section-filtered_data {
+            border-left: 2px solid green;
+            position: absolute;
+            left: 240px;
+            top: 26px;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+        }
+</style>
+<div id="admin_pages_views_f0_index">
+    <input type="hidden" class="data-change-journal-json" value="@Model.ChangeJournalJson" />
+    <div class="section-header"><span>Журнал разовых замен товара (зачётов)</span></div>
+    <div class="section-filter">
+        <div style="width: 100%; text-align: center;">
+            <span style="font-size: 11pt; font-weight: bold;">Фильтр</span>
+        </div>
+        <br />
+        <div>
+            <table>
+                <tr>
+                    <td>Разрешено</td>
+                    <td colspan="2"><input type="checkbox" checked="checked" /></td>
+                </tr>
+                <tr>
+                    <td>Не разрешено</td>
+                    <td colspan="2"><input type="checkbox" checked="checked" /></td>
+                </tr>
+                <tr>
+                    <td>Дата</td>
+                    <td><input type="text" style="width: 60px;" /></td>
+                    <td><input type="text" style="width: 60px;" /></td>
+                </tr>
+                <tr>
+                    <td>Менеджер</td>
+                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                </tr>
+                <tr>
+                    <td>Аукцион</td>
+                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                </tr>
+                <tr>
+                    <td>Спецификация</td>
+                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="section-filtered_data">
+        @RenderPage("~/Views/F0/Table.cshtml", Model)
+        <div class="data-change-journal-text">
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var FNetAdminPagesF0Index = (function () {
+        var mainDiv = $('#admin_pages_views_f0_index');
+        //var dataChangeJournalJson = mainDiv.find('input.data-change-journal-json').val();
+        //var dataChangeJournal = Nskd.Json.parse(dataChangeJournalJson);
+        //mainDiv.find('div.data-change-journal-text').text(Nskd.Json.toString(dataChangeJournal));
+    })();
+</script>
