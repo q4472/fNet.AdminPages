@@ -1,10 +1,9 @@
 ﻿@using FNet.AdminPages.Models
-@using System
 @using System.Data
 @model F0Model
 @{
     DataTable dt = null;
-    if (Model != null && Model.ChangeJournal.Tables.Count > 0)
+    if (Model != null && Model.ChangeJournal != null && Model.ChangeJournal.Tables.Count > 0)
     {
         dt = Model.ChangeJournal.Tables[0];
     }
@@ -33,10 +32,11 @@
 <div id="admin_pages_views_f0_table">
     @if (dt != null)
     {
-        F0Model.ItemsArray prevRow = null;
-        F0Model.ItemsArray currRow = null;
+        F0Model.ItemArray prevRow = null;
+        F0Model.ItemArray currRow = null;
         <table class="change-journal" style="margin: 6px;">
             <tr class="table-head-row">
+                <th>Х</th>
                 <th>ОК</th>
                 <th>Дата</th>
                 <th>Менеджер</th>
@@ -48,58 +48,68 @@
             @foreach (DataRow dr in dt.Rows)
             {
                 prevRow = currRow;
-                currRow = new F0Model.ItemsArray
-                {
-                    ОК = (dr["разрешено"] == DBNull.Value) ? "False" : ((Boolean)dr["разрешено"]).ToString(),
-                    Дата = (dr["дата"] == DBNull.Value) ? "" : ((DateTime)dr["дата"]).ToString("dd.MM.yy"),
-                    Менеджер = (dr["менеджер"] == DBNull.Value) ? "" : (String)dr["менеджер"],
-                    Аукцион = (dr["аукцион"] == DBNull.Value) ? "" : (String)dr["аукцион"],
-                    Спецификация = (dr["спецификация"] == DBNull.Value) ? "" : ((Int32)dr["спецификация"]).ToString(),
-                    Товар = (dr["товар"] == DBNull.Value) ? "" : (String)dr["товар"],
-                    Количество = (dr["количество"] == DBNull.Value) ? "" : ((Decimal)dr["количество"]).ToString("n3")
-                };
-            <tr class="table-body-row">
-                @if (prevRow == null
-                    || prevRow.Дата != currRow.Дата
-                    || prevRow.Менеджер != currRow.Менеджер
-                    || prevRow.Аукцион != currRow.Аукцион
-                    || prevRow.Спецификация != currRow.Спецификация)
-                {
-                    if (currRow.ОК == "True")
+                currRow = Model.GetRowItemArray(dr);
+                <tr class="table-body-row" data-uid="@currRow.товар_uid">
+                    @if (prevRow == null || prevRow.зачёт_uid != currRow.зачёт_uid)
                     {
-                        <td><input type="checkbox" checked="checked" /></td>
+                        if (currRow.Х == "True")
+                        {
+                            <td><input type="checkbox" name="Х" checked="checked" data-modified="0" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="checkbox" name="Х" data-modified="0" /></td>
+                        }
+                        if (currRow.ОК == "True")
+                        {
+                            <td><input type="checkbox" name="ОК" checked="checked" data-modified="0" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="checkbox" name="ОК" data-modified="0" /></td>
+                        }
+                        <td>@currRow.Дата</td>
+                        <td>@currRow.Менеджер</td>
+                        <td>@currRow.Аукцион</td>
+                        <td>@currRow.Спецификация</td>
+                        <td>@currRow.Товар</td>
+                        <td style="text-align: right">@currRow.Количество</td>
                     }
                     else
                     {
-                        <td><input type="checkbox" /></td>
-                    }
-                    <td>@currRow.Дата</td>
-                    <td>@currRow.Менеджер</td>
-                    <td>@currRow.Аукцион</td>
-                    <td>@currRow.Спецификация</td>
-                    <td>@currRow.Товар</td>
-                    <td style="text-align: right">@currRow.Количество</td>
-                }
-                else
-                {
-                    if (currRow.ОК == "True")
-                    {
+                        if (currRow.Х == "True")
+                        {
+                            <td style="border-top: none;"></td>
+                        }
+                        else
+                        {
+                            <td style="border-top: none;"></td>
+                        }
+                        if (currRow.ОК == "True")
+                        {
+                            <td style="border-top: none;"></td>
+                        }
+                        else
+                        {
+                            <td style="border-top: none;"></td>
+                        }
                         <td style="border-top: none;"></td>
-                    }
-                    else
-                    {
                         <td style="border-top: none;"></td>
+                        <td style="border-top: none;"></td>
+                        <td style="border-top: none;"></td>
+                        <td>@currRow.Товар</td>
+                        <td style="text-align: right">@currRow.Количество</td>
                     }
-                    <td style="border-top: none;"></td>
-                    <td style="border-top: none;"></td>
-                    <td style="border-top: none;"></td>
-                    <td style="border-top: none;"></td>
-                    <td>@currRow.Товар</td>
-                    <td style="text-align: right">@currRow.Количество</td>
-                }
-            </tr>
+                </tr>
             }
             <tr style="border: 1px solid black"></tr>
         </table>
     }
 </div>
+<script type="text/javascript">
+    var AdminPagesF0Table = (function () {
+        $('#admin_pages_views_f0_table input').change(function () {
+            $(this).attr('data-modified', '1');
+        });
+    })();
+</script>

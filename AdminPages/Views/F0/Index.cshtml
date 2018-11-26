@@ -53,54 +53,119 @@
         }
 </style>
 <div id="admin_pages_views_f0_index">
-    <input type="hidden" class="data-change-journal-json" value="@Model.ChangeJournalJson" />
     <div class="section-header"><span>Журнал разовых замен товара (зачётов)</span></div>
     <div class="section-filter">
         <div style="width: 100%; text-align: center;">
             <span style="font-size: 11pt; font-weight: bold;">Фильтр</span>
-        </div>
-        <br />
-        <div>
-            <table>
+            <br /><br />
+            <table style="width: 100%; text-align: left;">
+                <tr>
+                    <td>Все</td>
+                    <td colspan="2"><input type="checkbox" name="все" /></td>
+                </tr>
                 <tr>
                     <td>Разрешено</td>
-                    <td colspan="2"><input type="checkbox" checked="checked" /></td>
+                    <td colspan="2"><input type="checkbox" name="разрешено" checked="checked" /></td>
                 </tr>
                 <tr>
                     <td>Не разрешено</td>
-                    <td colspan="2"><input type="checkbox" checked="checked" /></td>
+                    <td colspan="2"><input type="checkbox" name="не_разрешено" checked="checked" /></td>
                 </tr>
                 <tr>
                     <td>Дата</td>
-                    <td><input type="text" style="width: 60px;" /></td>
-                    <td><input type="text" style="width: 60px;" /></td>
+                    <td><input type="text" name="дата_min" class="datepicker" style="width: 60px;" /></td>
+                    <td><input type="text" name="дата_max" class="datepicker" style="width: 60px;" /></td>
                 </tr>
                 <tr>
                     <td>Менеджер</td>
-                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                    <td colspan="2"><input type="text" name="менеджер" style="width: 130px;" /></td>
                 </tr>
                 <tr>
                     <td>Аукцион</td>
-                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                    <td colspan="2"><input type="text" name="аукцион" style="width: 130px;" /></td>
                 </tr>
                 <tr>
                     <td>Спецификация</td>
-                    <td colspan="2"><input type="text" style="width: 130px;" /></td>
+                    <td><input type="text" name="спецификация_min" style="width: 60px;" /></td>
+                    <td><input type="text" name="спецификация_max" style="width: 60px;" /></td>
                 </tr>
             </table>
+            <br />
+            <input type="button" value="Применить" onclick="AdminPagesF0Index.applyFilter(this);" style="font-size: 11pt;" />
+        </div>
+        <br /><br />
+        <div style="width: 100%; text-align: center; border-top: 2px solid green">
+            <br /><br />
+            <input type="button" value="Сохранить" onclick="AdminPagesF0Index.save(this);" style="font-size: 11pt;" />
         </div>
     </div>
     <div class="section-filtered_data">
         @RenderPage("~/Views/F0/Table.cshtml", Model)
-        <div class="data-change-journal-text">
-        </div>
     </div>
 </div>
 <script type="text/javascript">
-    var FNetAdminPagesF0Index = (function () {
+    var AdminPagesF0Index = (function () {
         var mainDiv = $('#admin_pages_views_f0_index');
-        //var dataChangeJournalJson = mainDiv.find('input.data-change-journal-json').val();
-        //var dataChangeJournal = Nskd.Json.parse(dataChangeJournalJson);
-        //mainDiv.find('div.data-change-journal-text').text(Nskd.Json.toString(dataChangeJournal));
+        var sectionFilter = mainDiv.find('div.section-filter');
+        var sectionFilteredData = mainDiv.find('div.section-filtered_data');
+
+        $.datepicker.setDefaults({ dateFormat: 'dd.mm.y' });
+        $('input.datepicker').datepicker();
+
+        return {
+            applyFilter: function (element) {
+                $(element).hide();
+                var rqp = {
+                    SessionId: Nskd.Server.SessionId,
+                    Command: 'AdminPages.F0.ApplyFilter',
+                    Parameters: []
+                };
+                sectionFilter.find('input[name]').each(function (index, element) {
+                    if (element.type == 'checkbox') {
+                        rqp.Parameters.push({ Name: element.name, Value: $(element).prop('checked') });
+                    } else if (element.type == 'text' && element.value) {
+                        var v = element.value;
+                        if ($(element).hasClass('datepicker')) {
+                            var d = '20' + v.substr(6, 2) + '-' + v.substr(3, 2) + '-' + v.substr(0, 2);
+                            rqp.Parameters.push({ Name: element.name, Value: d });
+                        } else {
+                            rqp.Parameters.push({ Name: element.name, Value: v });
+                        }
+                    }
+                });
+                sectionFilteredData.html('');
+                Nskd.Http.post({
+                    url: '/adminpages/f0/applyfilter',
+                    rqp: rqp,
+                    done: function (data) {
+                        sectionFilteredData.html(data);
+                        $(element).show();
+                    }
+                });
+            },
+            save: function (element) {
+                $(element).hide();
+                var rqp = {
+                    SessionId: Nskd.Server.SessionId,
+                    Command: 'AdminPages.F0.Save',
+                    Parameters: []
+                };
+                sectionFilteredData.find('input[data-modified="1"]').each(function () {
+                    var uid = $(this).closest('tr').attr('data-uid');
+                    var name = this.name;
+                    var value = $(this).prop('checked');
+                    rqp.Parameters.push({ Name: uid + name, Value: value });
+                });
+                sectionFilteredData.html('');
+                Nskd.Http.post({
+                    url: '/adminpages/f0/save',
+                    rqp: rqp,
+                    done: function (data) {
+                        AdminPagesF0Index.applyFilter();
+                        $(element).show();
+                    }
+                });
+            }
+        };
     })();
 </script>

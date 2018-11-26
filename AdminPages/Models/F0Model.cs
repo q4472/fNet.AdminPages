@@ -7,18 +7,21 @@ namespace FNet.AdminPages.Models
     public class F0Model
     {
         public DataSet ChangeJournal;
-        public String ChangeJournalJson;
-        public class ItemsArray
+        public class ItemArray
         {
+            public String зачёт_uid;
+            public String Х;
             public String ОК;
             public String Дата;
             public String Менеджер;
             public String Аукцион;
             public String Спецификация;
+            public String товар_uid;
             public String Товар;
             public String Количество;
         }
-        public F0Model(Guid sessionId)
+        public F0Model() { }
+        public void Get(Guid sessionId)
         {
             RequestPackage rqp = new RequestPackage()
             {
@@ -31,50 +34,56 @@ namespace FNet.AdminPages.Models
             {
                 ChangeJournal = rsp.Data;
             }
-            else
+        }
+        public void ApplyFilter(RequestPackage rqp)
+        {
+            rqp.Command = "[Pharm-Sib].[dbo].[спецификации_зачёт_get]";
+            ResponsePackage rsp = rqp.GetResponse("http://127.0.0.1:11012");
+            if (rsp != null)
             {
-                ChangeJournal = new DataSet();
+                ChangeJournal = rsp.Data;
+            }
+        }
+        public void Save(RequestPackage rqp)
+        {
+            if (rqp != null)
+            {
+                foreach (RequestParameter p in rqp.Parameters)
                 {
-                    DataTable dt = new DataTable("ChangeJournal");
-                    ChangeJournal.Tables.Add(dt);
-                    dt.Columns.Add("ОК", typeof(Boolean));
-                    dt.Columns.Add("Дата", typeof(DateTime));
-                    dt.Columns.Add("Менеджер", typeof(String));
-                    dt.Columns.Add("Аукцион", typeof(String));
-                    dt.Columns.Add("Спецификация", typeof(Int32));
-                    dt.Columns.Add("Товар", typeof(String));
-                    dt.Columns.Add("Количество", typeof(Decimal));
-                    dt.Rows.Add(new Object[] {
-                true, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12345,
-                "Цефабол порошок для приготовления раствора для внутривенного и внутримышечного введения 1000 мг - флаконы (5) - контурные ячейковые упаковки (1) - пачки картонные Общество с ограниченной ответственностью \"Производственно-фармацевтическая компания \"Пребенд\" (ООО \"ПФК \"Пребенд\") - Россия",
-                5.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12345,
-                "Цефотаксим порошок для приготовления раствора для внутривенного и внутримышечного введения, 1 г, - флаконы (5) / в комплекте с растворителем: вода для инъекций (ампулы) 5 мл-5 шт. / - пачки картонные Вл.Вып.к.Перв.Уп.Втор.Уп.Пр.Публичное акционерное общество \"Красфарма\" (ПАО \"Красфарма\"), Россия;",
-                5.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12346,
-                "Цефабол порошок для приготовления раствора для внутривенного и внутримышечного введения 1000 мг - флаконы (5) - контурные ячейковые упаковки (1) - пачки картонные Общество с ограниченной ответственностью \"Производственно-фармацевтическая компания \"Пребенд\" (ООО \"ПФК \"Пребенд\") - Россия",
-                5.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12346,
-                "Цефотаксим порошок для приготовления раствора для внутривенного и внутримышечного введения, 1 г, - флаконы (5) / в комплекте с растворителем: вода для инъекций (ампулы) 5 мл-5 шт. / - пачки картонные Вл.Вып.к.Перв.Уп.Втор.Уп.Пр.Публичное акционерное общество \"Красфарма\" (ПАО \"Красфарма\"), Россия;",
-                5.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12347,
-                "Цефабол порошок для приготовления раствора для внутривенного и внутримышечного введения 1000 мг - флаконы (5) - контурные ячейковые упаковки (1) - пачки картонные Общество с ограниченной ответственностью \"Производственно-фармацевтическая компания \"Пребенд\" (ООО \"ПФК \"Пребенд\") - Россия",
-                5.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12347,
-                "Цефотаксим порошок для приготовления раствора для внутривенного и внутримышечного введения, 1 г, - флаконы (5) / в комплекте с растворителем: вода для инъекций (ампулы) 5 мл-5 шт. / - пачки картонные Вл.Вып.к.Перв.Уп.Втор.Уп.Пр.Публичное акционерное общество \"Красфарма\" (ПАО \"Красфарма\"), Россия;",
-                4.0 });
-                    dt.Rows.Add(new Object[] {
-                false, new DateTime(2018, 10, 05), "Скворцова", "0316100021418000095", 12347,
-                "Цефотаксим порошок для приготовления раствора для внутривенного и внутримышечного введения, 1 г, - флаконы (5) / в комплекте с растворителем: вода для инъекций (ампулы) 5 мл-5 шт. / - пачки картонные Вл.Вып.к.Перв.Уп.Втор.Уп.Пр.Публичное акционерное общество \"Красфарма\" (ПАО \"Красфарма\"), Россия;",
-                1.0 });
+                    String name = p.Name;
+                    Boolean value = Convert.ToBoolean(p.Value);
+                    Guid uid = Guid.Parse(name.Substring(0, 36));
+                    String field = name.Substring(36);
+                    RequestPackage rqp1 = new RequestPackage
+                    {
+                        SessionId = rqp.SessionId,
+                        Command = "[Pharm-Sib].[dbo].[спецификации_зачёт_save]",
+                        Parameters = new RequestParameter[] {
+                            new RequestParameter { Name = "session_id", Value = rqp.SessionId },
+                            new RequestParameter { Name = "товар_uid", Value = uid },
+                            new RequestParameter { Name = field, Value = value }
+                        }
+                    };
+                    ResponsePackage rsp = rqp1.GetResponse("http://127.0.0.1:11012");
                 }
             }
-            ChangeJournalJson = Nskd.JsonV3.ToString(ChangeJournal);
+        }
+        public ItemArray GetRowItemArray(DataRow dr)
+        {
+            ItemArray items = new ItemArray
+            {
+                зачёт_uid = dr["зачёт_uid"].ToString(),
+                Х = (dr["обработано"] == DBNull.Value) ? "False" : ((Boolean)dr["обработано"]).ToString(),
+                ОК = (dr["разрешено"] == DBNull.Value) ? "False" : ((Boolean)dr["разрешено"]).ToString(),
+                Дата = (dr["дата"] == DBNull.Value) ? "" : ((DateTime)dr["дата"]).ToString("dd.MM.yy"),
+                Менеджер = (dr["менеджер"] == DBNull.Value) ? "" : (String)dr["менеджер"],
+                Аукцион = (dr["аукцион"] == DBNull.Value) ? "" : (String)dr["аукцион"],
+                Спецификация = (dr["спецификация"] == DBNull.Value) ? "" : ((Int32)dr["спецификация"]).ToString(),
+                товар_uid = dr["товар_uid"].ToString(),
+                Товар = (dr["товар"] == DBNull.Value) ? "" : (String)dr["товар"],
+                Количество = (dr["количество"] == DBNull.Value) ? "" : ((Decimal)dr["количество"]).ToString("n3")
+            };
+            return items;
         }
     }
 }

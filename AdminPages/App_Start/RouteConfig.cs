@@ -11,6 +11,16 @@ namespace FNet
 
             routes.MapRoute(
                 name: null,
+                url: "adminpages/f0/save",
+                defaults: new { controller = "F0", action = "Save" });
+
+            routes.MapRoute(
+                name: null,
+                url: "adminpages/f0/applyfilter",
+                defaults: new { controller = "F0", action = "ApplyFilter" });
+
+            routes.MapRoute(
+                name: null,
                 url: "adminpages/f0",
                 defaults: new { controller = "F0", action = "Index" });
 
