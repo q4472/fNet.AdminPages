@@ -1,0 +1,62 @@
+﻿@using FNet.AdminPages.Models
+@model F0Model
+<div  id="admin_pages_views_f0_filter" style="width: 100%; text-align: center;">
+    <span style="font-size: 11pt; font-weight: bold;">Фильтр</span>
+    <br /><br />
+    <table style="width: 100%; text-align: left;">
+        <tr>
+            <td>Все</td>
+            @if (Model.Filter.все == "" || Model.Filter.все == "False")
+            {
+                <td colspan="2"><input type="checkbox" name="все" /></td>
+            }
+            else
+            {
+                <td colspan="2"><input type="checkbox" name="все" checked="checked" /></td>
+            }
+        </tr>
+        <tr>
+            <td>Разрешено</td>
+            @if (Model.Filter.разрешено == "" || Model.Filter.разрешено == "False")
+            {
+                <td colspan="2"><input type="checkbox" name="разрешено" /></td>
+            }
+            else
+            {
+                <td colspan="2"><input type="checkbox" name="разрешено" checked="checked" /></td>
+            }
+        </tr>
+        <tr>
+            <td>Не разрешено</td>
+            @if (Model.Filter.не_разрешено == "" || Model.Filter.не_разрешено == "False")
+            {
+                <td colspan="2"><input type="checkbox" name="не_разрешено" /></td>
+            }
+            else
+            {
+                <td colspan="2"><input type="checkbox" name="не_разрешено" checked="checked" /></td>
+            }
+        </tr>
+        <tr>
+            <td>Дата</td>
+            <td><input type="text" name="дата_min" class="datepicker" style="width: 60px;" value="@Model.Filter.дата_min" /></td>
+            <td><input type="text" name="дата_max" class="datepicker" style="width: 60px;" value="@Model.Filter.дата_max" /></td>
+        </tr>
+        <tr>
+            <td>Менеджер</td>
+            <td colspan="2"><input type="text" name="менеджер" style="width: 130px;"  value="@Model.Filter.менеджер" /></td>
+        </tr>
+        <tr>
+            <td>Аукцион</td>
+            <td colspan="2"><input type="text" name="аукцион" style="width: 130px;" value="@Model.Filter.аукцион" /></td>
+        </tr>
+        <tr>
+            <td>Спецификация</td>
+            <td><input type="text" name="спецификация_min" style="width: 60px;" value="@Model.Filter.спецификация_min" /></td>
+            <td><input type="text" name="спецификация_max" style="width: 60px;" value="@Model.Filter.спецификация_max" /></td>
+        </tr>
+    </table>
+    <br />
+    <input type="button" value="Применить" onclick="AdminPagesF0Index.applyFilter(this);" style="font-size: 11pt;" />
+</div>
+

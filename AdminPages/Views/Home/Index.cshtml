@@ -7,10 +7,30 @@
 <script type="text/javascript">
     var FnetAdminPagesHomeIndex = (function () {
         Nskd.Server.SessionId = '00000000-0000-0000-0000-000000000000';
+        /*
         var url = '/adminpages/f0';
         var jqXHR = $.post(url, 'sessionId=' + Nskd.Server.SessionId, function (data) {
             $('#_layout_content').html(data);
         });
         jqXHR.fail(function () { alert(jqXHR.responseText); });
+        */
+        var rqp = {
+            SessionId: Nskd.Server.SessionId,
+            Command: 'Fnet.AdminPages.F0.Get',
+            Parameters: [
+                { Name: 'все', Value: 'true' },
+                { Name: 'спецификация_min', Value: '12347' },
+                { Name: 'спецификация_max', Value: '12347' }
+            ]
+        };
+        var jqXHR = Nskd.Http.post({
+            url: '/adminpages/f0',
+            rqp: rqp,
+            done: function (data) {
+                $('#_layout_content').html(data);
+            }
+        });
+        jqXHR.fail(function () { alert(jqXHR.responseText); });
+        
     })();
 </script>

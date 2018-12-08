@@ -46,15 +46,60 @@ namespace FNet.AdminPages.Models
             }
             public Int32 RowCount { get { return table.Rows.Count; } }
         }
-        public DataTable Filter;
-        public F0Model() { }
+        public FilterData Filter;
+        public class FilterData
+        {
+            public String все;
+            public String разрешено;
+            public String не_разрешено;
+            public String дата_min;
+            public String дата_max;
+            public String менеджер;
+            public String аукцион;
+            public String спецификация_min;
+            public String спецификация_max;
+            public FilterData() { }
+        }
+        public F0Model()
+        {
+            Filter = new FilterData()
+            {
+                все = "False",
+                разрешено = "True",
+                не_разрешено = "True",
+                дата_min = "",
+                дата_max = "",
+                менеджер = "",
+                аукцион = "",
+                спецификация_min = "",
+                спецификация_max = ""
+            };
+        }
         public void Get(Guid sessionId, RequestPackage rqp0)
         {
+            if (rqp0 != null)
+            {
+                sessionId = rqp0.SessionId;
+                Filter.все = rqp0["все"] as String;
+                Filter.спецификация_min = rqp0["спецификация_min"] as String;
+                Filter.спецификация_max = rqp0["спецификация_max"] as String;
+            }
             RequestPackage rqp = new RequestPackage()
             {
                 SessionId = sessionId,
-                Command = "[Pharm-Sib].[dbo].[спецификации_зачёт_get]"
+                Command = "[Pharm-Sib].[dbo].[спецификации_зачёт_get]",
+                Parameters = new RequestParameter[] {
+                    new RequestParameter() { Name = "все", Value = Filter.все },
+                    new RequestParameter() { Name = "разрешено", Value = Filter.разрешено },
+                    new RequestParameter() { Name = "не_разрешено", Value = Filter.не_разрешено }
+                }
             };
+            if (!String.IsNullOrWhiteSpace(Filter.дата_min)) rqp["дата_min"] = Filter.дата_min;
+            if (!String.IsNullOrWhiteSpace(Filter.дата_max)) rqp["дата_max"] = Filter.дата_max;
+            if (!String.IsNullOrWhiteSpace(Filter.менеджер)) rqp["менеджер"] = Filter.менеджер;
+            if (!String.IsNullOrWhiteSpace(Filter.аукцион)) rqp["аукцион"] = Filter.аукцион;
+            if (!String.IsNullOrWhiteSpace(Filter.спецификация_min)) rqp["спецификация_min"] = Filter.спецификация_min;
+            if (!String.IsNullOrWhiteSpace(Filter.спецификация_max)) rqp["спецификация_max"] = Filter.спецификация_max;
             rqp.AddSessionIdToParameters();
             ResponsePackage rsp = rqp.GetResponse("http://127.0.0.1:11012");
             if (rsp != null && rsp.Data != null && rsp.Data.Tables != null && rsp.Data.Tables.Count > 0)
