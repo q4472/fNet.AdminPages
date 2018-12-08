@@ -7,11 +7,12 @@ namespace FNet.AdminPages.Controllers
 {
     public class F0Controller : Controller
     {
-        public Object Index(Guid SessionId)
+        public Object Index(Guid sessionId)
         {
             Object v = null;
+            RequestPackage rqp = RequestPackage.ParseRequest(Request.InputStream, Request.ContentEncoding);
             F0Model m = new F0Model();
-            m.Get(SessionId);
+            m.Get(sessionId, rqp);
             v = PartialView("~/Views/F0/Index.cshtml", m);
             return v;
         }

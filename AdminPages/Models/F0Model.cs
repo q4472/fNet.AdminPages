@@ -6,22 +6,49 @@ namespace FNet.AdminPages.Models
 {
     public class F0Model
     {
-        public DataSet ChangeJournal;
-        public class ItemArray
-        {
-            public String зачёт_uid;
-            public String Х;
-            public String ОК;
-            public String Дата;
-            public String Менеджер;
-            public String Аукцион;
-            public String Спецификация;
-            public String товар_uid;
-            public String Товар;
-            public String Количество;
+        public FilteredData Data;
+        public class FilteredData {
+            private DataTable table;
+            public FilteredData (DataTable dataTable)
+            {
+                table = dataTable;
+            }
+            public class RowItems
+            {
+                public String зачёт_uid;
+                public String обработано;
+                public String разрешено;
+                public String дата;
+                public String менеджер;
+                public String аукцион;
+                public String спецификация;
+                public String товар_uid;
+                public String товар;
+                public String количество;
+            }
+            public RowItems GetRowItems(Int32 rowIndex)
+            {
+                DataRow dr = table.Rows[rowIndex];
+                RowItems items = new RowItems
+                {
+                    зачёт_uid = dr["зачёт_uid"].ToString(),
+                    обработано = (dr["обработано"] == DBNull.Value) ? "False" : ((Boolean)dr["обработано"]).ToString(),
+                    разрешено = (dr["разрешено"] == DBNull.Value) ? "False" : ((Boolean)dr["разрешено"]).ToString(),
+                    дата = (dr["дата"] == DBNull.Value) ? "" : ((DateTime)dr["дата"]).ToString("dd.MM.yy"),
+                    менеджер = (dr["менеджер"] == DBNull.Value) ? "" : (String)dr["менеджер"],
+                    аукцион = (dr["аукцион"] == DBNull.Value) ? "" : (String)dr["аукцион"],
+                    спецификация = (dr["спецификация"] == DBNull.Value) ? "" : ((Int32)dr["спецификация"]).ToString(),
+                    товар_uid = dr["товар_uid"].ToString(),
+                    товар = (dr["товар"] == DBNull.Value) ? "" : (String)dr["товар"],
+                    количество = (dr["количество"] == DBNull.Value) ? "" : ((Decimal)dr["количество"]).ToString("n3")
+                };
+                return items;
+            }
+            public Int32 RowCount { get { return table.Rows.Count; } }
         }
+        public DataTable Filter;
         public F0Model() { }
-        public void Get(Guid sessionId)
+        public void Get(Guid sessionId, RequestPackage rqp0)
         {
             RequestPackage rqp = new RequestPackage()
             {
@@ -30,18 +57,18 @@ namespace FNet.AdminPages.Models
             };
             rqp.AddSessionIdToParameters();
             ResponsePackage rsp = rqp.GetResponse("http://127.0.0.1:11012");
-            if (rsp != null)
+            if (rsp != null && rsp.Data != null && rsp.Data.Tables != null && rsp.Data.Tables.Count > 0)
             {
-                ChangeJournal = rsp.Data;
+                Data = new FilteredData(rsp.Data.Tables[0]);
             }
         }
         public void ApplyFilter(RequestPackage rqp)
         {
             rqp.Command = "[Pharm-Sib].[dbo].[спецификации_зачёт_get]";
             ResponsePackage rsp = rqp.GetResponse("http://127.0.0.1:11012");
-            if (rsp != null)
+            if (rsp != null && rsp.Data != null && rsp.Data.Tables != null && rsp.Data.Tables.Count > 0)
             {
-                ChangeJournal = rsp.Data;
+                Data = new FilteredData(rsp.Data.Tables[0]);
             }
         }
         public void Save(RequestPackage rqp)
@@ -67,23 +94,6 @@ namespace FNet.AdminPages.Models
                     ResponsePackage rsp = rqp1.GetResponse("http://127.0.0.1:11012");
                 }
             }
-        }
-        public ItemArray GetRowItemArray(DataRow dr)
-        {
-            ItemArray items = new ItemArray
-            {
-                зачёт_uid = dr["зачёт_uid"].ToString(),
-                Х = (dr["обработано"] == DBNull.Value) ? "False" : ((Boolean)dr["обработано"]).ToString(),
-                ОК = (dr["разрешено"] == DBNull.Value) ? "False" : ((Boolean)dr["разрешено"]).ToString(),
-                Дата = (dr["дата"] == DBNull.Value) ? "" : ((DateTime)dr["дата"]).ToString("dd.MM.yy"),
-                Менеджер = (dr["менеджер"] == DBNull.Value) ? "" : (String)dr["менеджер"],
-                Аукцион = (dr["аукцион"] == DBNull.Value) ? "" : (String)dr["аукцион"],
-                Спецификация = (dr["спецификация"] == DBNull.Value) ? "" : ((Int32)dr["спецификация"]).ToString(),
-                товар_uid = dr["товар_uid"].ToString(),
-                Товар = (dr["товар"] == DBNull.Value) ? "" : (String)dr["товар"],
-                Количество = (dr["количество"] == DBNull.Value) ? "" : ((Decimal)dr["количество"]).ToString("n3")
-            };
-            return items;
         }
     }
 }

@@ -1,18 +1,16 @@
-﻿@if (HttpContext.Current.IsDebuggingEnabled)
-{
-    <div>Debugging is enabled.</div>
-}
-<div id="fnet_adminpages_home_index">
-    <input type="button" value="Go to the new page" onclick="FnetAdminPagesHomeIndex.goTo();" />
+﻿<div id="fnet_adminpages_home_index">
+    @if (HttpContext.Current.IsDebuggingEnabled)
+    {
+        <div>Debugging is enabled.</div>
+    }
 </div>
 <script type="text/javascript">
     var FnetAdminPagesHomeIndex = (function () {
-        return {
-            goTo: function () {
-                //Nskd.Server.SessionId = '00000000-0000-0000-0000-000000000000';
-                Nskd.Client.EnvVars.selectedMenuNodeUrl = '/adminpages/f0';
-                Nskd.Server.gotoTheNewPage(null, '#_layout_content');
-            }
-        };
+        Nskd.Server.SessionId = '00000000-0000-0000-0000-000000000000';
+        var url = '/adminpages/f0';
+        var jqXHR = $.post(url, 'sessionId=' + Nskd.Server.SessionId, function (data) {
+            $('#_layout_content').html(data);
+        });
+        jqXHR.fail(function () { alert(jqXHR.responseText); });
     })();
 </script>

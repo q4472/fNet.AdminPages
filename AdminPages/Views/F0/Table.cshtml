@@ -1,13 +1,6 @@
 ﻿@using FNet.AdminPages.Models
 @using System.Data
 @model F0Model
-@{
-    DataTable dt = null;
-    if (Model != null && Model.ChangeJournal != null && Model.ChangeJournal.Tables.Count > 0)
-    {
-        dt = Model.ChangeJournal.Tables[0];
-    }
-}
 <style type="text/css">
     #admin_pages_views_f0_table table.change-journal tr {
         border-left: 1px solid black;
@@ -30,10 +23,10 @@
     }
 </style>
 <div id="admin_pages_views_f0_table">
-    @if (dt != null)
+    @if (Model != null && Model.Data != null)
     {
-        F0Model.ItemArray prevRow = null;
-        F0Model.ItemArray currRow = null;
+        F0Model.FilteredData.RowItems prevRow = null;
+        F0Model.FilteredData.RowItems currRow = null;
         <table class="change-journal" style="margin: 6px;">
             <tr class="table-head-row">
                 <th>Х</th>
@@ -45,39 +38,39 @@
                 <th>Товар</th>
                 <th>Количество</th>
             </tr>
-            @foreach (DataRow dr in dt.Rows)
+            @for (Int32 i = 0; i < Model.Data.RowCount; i++)
             {
                 prevRow = currRow;
-                currRow = Model.GetRowItemArray(dr);
+                currRow = Model.Data.GetRowItems(i);
                 <tr class="table-body-row" data-uid="@currRow.товар_uid">
                     @if (prevRow == null || prevRow.зачёт_uid != currRow.зачёт_uid)
                     {
-                        if (currRow.Х == "True")
+                        if (currRow.обработано == "True")
                         {
-                            <td><input type="checkbox" name="Х" checked="checked" data-modified="0" /></td>
+                            <td><input type="checkbox" name="обработано" checked="checked" data-modified="0" /></td>
                         }
                         else
                         {
-                            <td><input type="checkbox" name="Х" data-modified="0" /></td>
+                            <td><input type="checkbox" name="обработано" data-modified="0" /></td>
                         }
-                        if (currRow.ОК == "True")
+                        if (currRow.разрешено == "True")
                         {
-                            <td><input type="checkbox" name="ОК" checked="checked" data-modified="0" /></td>
+                            <td><input type="checkbox" name="разрешено" checked="checked" data-modified="0" /></td>
                         }
                         else
                         {
-                            <td><input type="checkbox" name="ОК" data-modified="0" /></td>
+                            <td><input type="checkbox" name="разрешено" data-modified="0" /></td>
                         }
-                        <td>@currRow.Дата</td>
-                        <td>@currRow.Менеджер</td>
-                        <td>@currRow.Аукцион</td>
-                        <td>@currRow.Спецификация</td>
-                        <td>@currRow.Товар</td>
-                        <td style="text-align: right">@currRow.Количество</td>
+                        <td>@currRow.дата</td>
+                        <td>@currRow.менеджер</td>
+                        <td>@currRow.аукцион</td>
+                        <td>@currRow.спецификация</td>
+                        <td>@currRow.товар</td>
+                        <td style="text-align: right">@currRow.количество</td>
                     }
                     else
                     {
-                        if (currRow.Х == "True")
+                        if (currRow.обработано == "True")
                         {
                             <td style="border-top: none;"></td>
                         }
@@ -85,7 +78,7 @@
                         {
                             <td style="border-top: none;"></td>
                         }
-                        if (currRow.ОК == "True")
+                        if (currRow.разрешено == "True")
                         {
                             <td style="border-top: none;"></td>
                         }
@@ -97,8 +90,8 @@
                         <td style="border-top: none;"></td>
                         <td style="border-top: none;"></td>
                         <td style="border-top: none;"></td>
-                        <td>@currRow.Товар</td>
-                        <td style="text-align: right">@currRow.Количество</td>
+                        <td>@currRow.товар</td>
+                        <td style="text-align: right">@currRow.количество</td>
                     }
                 </tr>
             }
