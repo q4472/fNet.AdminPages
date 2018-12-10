@@ -81,8 +81,8 @@ namespace FNet.AdminPages.Models
             {
                 sessionId = rqp0.SessionId;
                 Filter.все = rqp0["все"] as String;
-                Filter.спецификация_min = rqp0["спецификация_min"] as String;
-                Filter.спецификация_max = rqp0["спецификация_max"] as String;
+                Filter.спецификация_min = (rqp0["спецификация_min"] == null) ? "": rqp0["спецификация_min"].ToString();
+                Filter.спецификация_max = (rqp0["спецификация_max"] == null) ? "" : rqp0["спецификация_max"].ToString();
             }
             RequestPackage rqp = new RequestPackage()
             {
